@@ -1,0 +1,194 @@
+PROC SQL; SELECT COUNT(위험율코드), COUNT(DISTINCT 위험율코드) FROM LIB.IRIS_위험률; QUIT;
+
+
+
+
+proc sql ;
+ connect to saphana (&HanaCpc_Connect. );
+ create table 상품분류 as
+ select  *   from  connection to saphana (
+           select distinct
+    a."ZA_PRCD" AS "상품코드"
+/*      , a."ZA_PRDT_NM"  AS "상품명"    */
+
+        , &product
+
+
+              from   "_SYS_BIC"."LM.PM.M/ZCVPMM600"  as a
+
+             where   a.ZA_FIN_YM = &마감년월
+ );
+disconnect from saphana;
+quit;
+PROC SQL; SELECT COUNT(상품코드), COUNT(DISTINCT 상품코드) FROM 상품분류; QUIT;
+
+
+PROC SQL;
+
+CREATE TABLE
+상품 AS SELECT 상품코드, MAX(상품명) AS 대표상품명
+    FROM LIB.IRIS_상품
+    WHERE 판매종료일자='99991231' and substr(판매개시일자,1,6)<'202312'
+    GROUP BY 1;
+
+CREATE TABLE
+담보 AS SELECT  담보코드, MAX(담보명) AS 대표담보명
+     FROM LIB.IRIS_주보험
+     GROUP BY 1;
+
+CREATE TABLE
+위험률 AS SELECT  위험율코드, 위험율명, 상세담보코드, 보장진단코드
+FROM LIB.IRIS_위험률;
+
+CREATE TABLE DATA AS
+
+
+SELECT A.상품코드, A.대표상품명, B.담보코드, B.대표담보명, C.위험율코드, 위험율명, 상세담보코드, 보장진단코드
+
+FROM 상품 A
+ LEFT JOIN LIB.IRIS_맵핑_상품담보 AB ON A.상품코드=AB.상품코드
+ LEFT JOIN 담보 B ON AB.담보코드=B.담보코드
+ LEFT JOIN LIB.IRIS_맵핑_담보위험률 BC ON B.담보코드=BC.담보코드
+ LEFT JOIN 위험률 C ON BC.위험율코드=C.위험율코드
+
+;
+
+QUIT;
+
+
+
+/*--------CNT --------------------------*/
+
+PROC SQL;
+
+SELECT COUNT( DISTINCT 위험율코드), COUNT( DISTINCT 상세담보코드), COUNT( DISTINCT 보장진단코드)
+FROM data
+
+;QUIT;
+
+PROC SQL;
+
+SELECT 상품코드, COUNT( DISTINCT 위험율코드) AS 위험율, COUNT( DISTINCT 상세담보코드) AS 상세담보, COUNT( DISTINCT 보장진단코드) AS 보장진단
+FROM data
+GROUP BY 1
+
+;QUIT;
+
+/*----------------------------------*/
+proc sql;
+ create table original_data as
+ select distinct 상품코드, 상세담보코드
+ from data
+ where 상세담보코드 is not null
+ order by 상품코드, 상세담보코드
+;quit;
+
+
+DATA transformed_data;
+ set original_data;
+ by 상품코드;
+
+ retain data_count;
+ if first.상품코드 then do;
+  data_count = 0;
+ end;
+
+ data_count + 1;
+ variable_name = cats('상세담보코드', data_count);
+ output;
+run;
+
+proc transpose data=transformed_data out=final_data;
+ by 상품코드;
+ id variable_name;
+ var 상세담보코드;
+run;
+
+
+proc sql;
+create table final_data2 as
+
+select a.상품코드 as 상품코드1, a.대표상품명, a2.상품분류, b.*
+from 상품 a
+ left join 상품분류 a2 on a.상품코드=a2.상품코드
+ left join final_data b on a.상품코드=b.상품코드
+
+;quit;
+
+data lib.target_상세담보코드; set final_data2; run;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*----------------------------------*/
+proc sql;
+ create table original_data as
+ select distinct 상품코드, 보장진단코드
+ from data
+ where 보장진단코드 is not null
+ order by 상품코드, 보장진단코드
+;quit;
+
+
+DATA transformed_data;
+ set original_data;
+ by 상품코드;
+
+ retain data_count;
+ if first.상품코드 then do;
+  data_count = 0;
+ end;
+
+ data_count + 1;
+ variable_name = cats('보장진단코드', data_count);
+ output;
+run;
+
+proc transpose data=transformed_data out=final_data;
+ by 상품코드;
+ id variable_name;
+ var 보장진단코드;
+run;
+
+
+proc sql;
+create table final_data2 as
+
+select a.상품코드 as 상품코드1, a.대표상품명, a2.상품분류, b.*
+from 상품 a
+ left join 상품분류 a2 on a.상품코드=a2.상품코드
+ left join final_data b on a.상품코드=b.상품코드
+ where b.상품코드 is not null
+;quit;
+
+data lib.target_보장진단코드; set final_data2; run;
