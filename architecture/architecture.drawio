@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-11-17T02:35:42.939Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="lR_S89RLLfpolV7ci3lK" version="22.1.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-17T03:56:48.602Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="pjMxEiL5JzDWwP8WaW9j" version="22.1.2" type="github">
   <diagram name="페이지-1" id="DrAP7eZRbEFT3B6ZiXp5">
     <mxGraphModel dx="1026" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -20,19 +20,16 @@
           <mxGeometry x="250" y="140" width="200" height="200" as="geometry" />
         </mxCell>
         <mxCell id="0Ap0oMkYR-13eDsSxTsI-9" value="타겟 계약 메타 정보" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="460" y="140" width="200" height="200" as="geometry" />
+          <mxGeometry x="460" y="140" width="367" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="0Ap0oMkYR-13eDsSxTsI-72" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="0Ap0oMkYR-13eDsSxTsI-9" source="0Ap0oMkYR-13eDsSxTsI-14" target="0Ap0oMkYR-13eDsSxTsI-69">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-14" value="주보험 파라미터 정보" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
+          <mxGeometry x="20.630000000000003" y="40" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="0Ap0oMkYR-13eDsSxTsI-14" value="IRIS DB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
-          <mxGeometry x="70" y="30" width="120" height="60" as="geometry" />
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-75" value="위험률 메타 정보" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
+          <mxGeometry x="20.629999999999995" y="110" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="0Ap0oMkYR-13eDsSxTsI-69" value="상품-주보험별&lt;br&gt;위험률 정보" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
-          <mxGeometry x="80" y="120" width="100" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="0Ap0oMkYR-13eDsSxTsI-74" value="HANA DB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
-          <mxGeometry x="20" y="105" width="120" height="60" as="geometry" />
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-81" value="보장진단코드(ZA_COVR_DIGN_CD)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="0Ap0oMkYR-13eDsSxTsI-9">
+          <mxGeometry x="147" y="85" width="220" height="30" as="geometry" />
         </mxCell>
         <mxCell id="0Ap0oMkYR-13eDsSxTsI-68" value="" style="group" vertex="1" connectable="0" parent="1">
           <mxGeometry x="20" y="390" width="590" height="270" as="geometry" />
@@ -115,6 +112,18 @@
           <mxGeometry width="590" height="270" as="geometry">
             <mxRectangle width="80" height="30" as="alternateBounds" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-76" value="List Item" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="360" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-77" value="위험률 계산 대상 질병(상세담보코드)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="607" y="250" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-79" value="남성/여성가중치" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="275" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0Ap0oMkYR-13eDsSxTsI-80" value="위험률구분코드" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="305" width="220" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
