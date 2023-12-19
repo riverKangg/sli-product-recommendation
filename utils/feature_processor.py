@@ -191,6 +191,22 @@ class FeatureProcessor(object):
 
 
 if __name__ == '__main__':
+    cust_df = DataDistributor('dev_customer_dist').generate_samples().set_index('ID')
+    cust_df['마감년월'] = cust_df['마감년월'].astype(int)
+
+    contract_df = DataDistributor('dev_contract_dist').generate_samples()
+    contract_df['prdt_cat'] = contract_df['상품중분류2'].replace(read_product_label()['contract_previous_label'])
+    contract_df['계약일자'] = pd.to_datetime(contract_df['계약일자'] // 10 ** 9, unit='s')
+
+    target_df = DataDistributor('dev_target_dist').generate_samples()
+    target_df['prdt_cat'] = target_df['상품중분류2'].replace(read_product_label()['contract_target_label'])
+    target_df['계약일자'] = pd.to_datetime(target_df['계약일자'] // 10 ** 9, unit='s')
+
+    data_dict = {'dev': {}, 'oot': {}}
+    data_dict['dev']['dev_customer'] = cust_df
+    data_dict['dev']['dev_contract_previous'] = contract_df
+    data_dict['dev']['dev_contract_target'] = target_df
+
     fp = FeatureProcessor(data_dict['dev']['dev_customer'], data_dict['dev']['dev_contract_previous'],
                           data_dict['dev']['dev_contract_target'])
     fp.add_feature_last_n_product()
