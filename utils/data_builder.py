@@ -1,13 +1,7 @@
 import json
 import random
-import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-
-import sys
-
-sys.path.append('/opt/conda/bin/python')
-sys.path.append('/home/sagemaker-user/sli-product-recommendation')
 
 from utils.helpers import read_product_label
 
