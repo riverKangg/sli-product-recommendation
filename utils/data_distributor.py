@@ -24,6 +24,7 @@ class DataDistributor(object):
         with open(self.filepath, 'w') as file:
             json.dump(self.distributions, file)
 
+
 class DataGenerator(object):
     def __init__(self, cust_dist_file, contract_dist_file, target_dist_file,
                  data_size=100
@@ -59,16 +60,17 @@ class DataGenerator(object):
         cust_df['ID'] = range(1, self.data_size + 1)
 
         contract_df = self.generate_sample(self.contract_dist, self.data_size * 10)
-        contract_df['ID'] = random.choices(range(1, self.data_size + 1), k=self.data_size * 10)
+        contract_df['ID'] = list(range(1, self.data_size + 1)) * 10
         contract_df['계약일자'] = pd.to_datetime(contract_df['계약일자'] // 10 ** 9, unit='s')
         contract_df['prdt_cat'] = contract_df['상품중분류2'].replace(read_product_label()['contract_previous_label'])
 
         target_df = self.generate_sample(self.target_dist, self.data_size * 3)
-        target_df['ID'] = random.choices(range(1, self.data_size + 1), k=self.data_size * 3)
+        target_df['ID'] = list(range(1, self.data_size + 1)) * 3
         target_df['계약일자'] = pd.to_datetime(target_df['계약일자'] // 10 ** 9, unit='s')
         target_df['prdt_cat'] = target_df['상품중분류2'].replace(read_product_label()['contract_target_label'])
 
         return cust_df, contract_df, target_df
+
 
 if __name__ == '__main__':
     # 1. DataDistributor
@@ -82,6 +84,6 @@ if __name__ == '__main__':
     distributor.save_distributions(df)
 
     # 2. DataGenerator
-    dg = DataGenerator('dev_customer_dist','dev_contract_dist','dev_target_dist')
+    dg = DataGenerator('dev_customer_dist', 'dev_contract_dist', 'dev_target_dist')
     cust_df, contract_df, target_df = dg.make_vertual_data()
     print(cust_df.head())
