@@ -5,7 +5,8 @@ import pandas as pd
 
 class DataDistributor(object):
     def __init__(self, filename='distribution'):
-        self.filepath = f'utils/{filename}.json'
+        os.makedirs('utils/distribution/', exist_ok=True)
+        self.filepath = f'utils/distribution/{filename}.json'
         self.distributions = {}
 
     def save_distributions(self, df):
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     distributor = DataDistributor()
     # distributor.save_distributions(df)
 
-    dev_distributor = DataDistributor('dev_distribution')
+    dev_distributor = DataDistributor('dev_customer_dist')
     dev_sample_df = dev_distributor.generate_samples()
 
     print('Development Set Generating:')

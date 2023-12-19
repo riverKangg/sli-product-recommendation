@@ -1,7 +1,13 @@
 import json
 import random
+import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+
+import sys
+
+sys.path.append('/opt/conda/bin/python')
+sys.path.append('/home/sagemaker-user/sli-product-recommendation')
 
 from utils.helpers import read_product_label
 
@@ -74,6 +80,11 @@ class DataBuilder(object):
             self.save_product_label(contract_previous, contract_target)
         contract_previous, contract_target = self.contract_label_encoding(contract_previous, contract_target)
 
+        # keep only necessary columns
+        necessary_columns = ['ID', self.product_category, '계약일자', 'prdt_cat']
+        contract_previous = contract_previous[necessary_columns].drop_duplicates()
+        contract_target = contract_target[necessary_columns].drop_duplicates()
+
         # print result
         print('■■■ Contract Split ■■■')
         print(f' Number of total contracts: {contract.shape[0]:,}')
@@ -87,7 +98,7 @@ class DataBuilder(object):
 
     def save_product_label(self, contract_previous, contract_target):
         contract_target_names = list(contract_target[self.product_category].value_counts().keys())
-        contract_target_codes = list(range(1, len(contract_target_names) + 1))
+        contract_target_codes = list(range(1, len(contract_target_names) + 1))  # 0 is considered as null
         contract_target_label = dict(zip(contract_target_names, contract_target_codes))
 
         contract_previous_names = pd.Series(contract_previous[self.product_category].value_counts().keys())
