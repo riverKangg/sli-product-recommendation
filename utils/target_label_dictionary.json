@@ -1,0 +1,36 @@
+{
+  "contract_previous_label": {
+    "38.\uac74\uac15": 1,
+    "11.\uc77c\ubc18\uc885\uc2e0": 2,
+    "31.\uc5b4\ub9b0\uc774": 3,
+    "37.\uce58\uc544": 4,
+    "41.\uc77c\ubc18\uc5f0\uae08": 5,
+    "32.\uc554": 6,
+    "43.\uc801\uaca9\uc5f0\uae08": 7,
+    "51.\uc77c\ubc18\uc800\ucd95": 8,
+    "39.\uac04\ubcd1": 9,
+    "20.CI": 10,
+    "35.\uc815\uae30": 11,
+    "33.\uc0c1\ud574": 12,
+    "12.\ubcc0\uc561\uc885\uc2e0": 13,
+    "34.\uc2e4\uc190": 14,
+    "\uae30\ud0c0": 15,
+    "42.\ubcc0\uc561\uc5f0\uae08": 16,
+    "52.\ubcc0\uc561\uc800\ucd95": 17,
+    "36.\ub2e8\uccb4": 18
+  },
+  "contract_target_label": {
+    "38.\uac74\uac15": 1,
+    "11.\uc77c\ubc18\uc885\uc2e0": 2,
+    "31.\uc5b4\ub9b0\uc774": 3,
+    "37.\uce58\uc544": 4,
+    "41.\uc77c\ubc18\uc5f0\uae08": 5,
+    "32.\uc554": 6,
+    "43.\uc801\uaca9\uc5f0\uae08": 7,
+    "51.\uc77c\ubc18\uc800\ucd95": 8,
+    "39.\uac04\ubcd1": 9,
+    "20.CI": 10,
+    "35.\uc815\uae30": 11,
+    "33.\uc0c1\ud574": 12
+  }
+}
