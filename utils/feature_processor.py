@@ -1,7 +1,5 @@
 import pandas as pd
-import warnings
-
-warnings.filterwarnings('ignore')
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 from utils import *
 
@@ -80,7 +78,9 @@ class FeatureProcessor(object):
         result_df = data.groupby('ID').agg(pre_contract_count=('계약여부', 'count'),
                                            pre_contract_month_min=('계약경과월', 'min'),
                                            pre_contract_month_max=('계약경과월', 'max'))
+
         data_previous_contract_describe = data_previous_contract_describe.join(result_df)
+        return data_previous_contract_describe
 
         assert len(data_previous_contract_describe[data_previous_contract_describe.pre_contract_count == 0]) == 0
         assert ~data_previous_contract_describe.isnull().values.any()
@@ -111,8 +111,8 @@ class FeatureProcessor(object):
         data['계약경과월'] = list(
             map(lambda x: relativedelta(end_date, x).years * 12 + relativedelta(end_date, x).months, data['계약일자']))
 
-        data_prodpre_month = contract_previous.pivot_table(index='ID', columns='prdt_cat', values='계약경과월',
-                                                           aggfunc='min')
+        data_prodpre_month = data.pivot_table(index='ID', columns='prdt_cat', values='계약경과월',
+                                              aggfunc='min')
         data_prodpre_month.columns = list(map(lambda x: f'pre_m_{x}', data_prodpre_month.columns))
 
         data_prodpre_month = data_prodpre_month.fillna(-1)
@@ -140,7 +140,8 @@ class FeatureProcessor(object):
         print('■■■ Feature Encoding ■■■')
         categorical_features = [item for sublist in self.field_dictionary['categorical'].values() for item in sublist]
         numeric_features = [item for sublist in self.field_dictionary['numerical'].values() for item in sublist]
-
+        print(f' categorical features: {len(categorical_features), categorical_features}')
+        print(f' numerical features: {len(numeric_features), numeric_features}')
         if make_new_encoder:
             os.makedirs('utils/encoders/', exist_ok=True)
             for feat in categorical_features:
@@ -155,6 +156,7 @@ class FeatureProcessor(object):
                 joblib.dump(mms, f'utils/encoders/{feat}_minmax_scaler.joblib')
                 del mms
 
+
         for feat in categorical_features:
             filename = f'utils/encoders/{feat}_label_encoder.joblib'
             lbe = joblib.load(filename)
@@ -168,11 +170,13 @@ class FeatureProcessor(object):
 
         self.customer_dataset = data
 
+
     def make_input_for_modeling(self):
         if self.is_development:
             self.encoding(make_new_encoder=True)
         else:
             self.encoding(make_new_encoder=False)
+
         assert self.customer_dataset.shape[0] == self.num_of_ids
         return self.customer_dataset
 
@@ -204,4 +208,4 @@ if __name__ == '__main__':
                           data_dict['dev']['dev_contract_target'])
     fp.add_feature_last_n_product()
     fp.add_feature_previous_contract_describe()
-    field_dict, data = fp.make_input_for_modeling()
+    cust_data = fp.make_input_for_modeling()
