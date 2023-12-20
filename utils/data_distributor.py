@@ -27,7 +27,7 @@ class DataDistributor(object):
 
 class DataGenerator(object):
     def __init__(self, cust_dist_file, contract_dist_file, target_dist_file,
-                 data_size=100
+                 data_size=5000
                  ):
         self.cust_dist = self.load_distributions(f'utils/distribution/{cust_dist_file}.json')
         self.contract_dist = self.load_distributions(f'utils/distribution/{contract_dist_file}.json')
@@ -54,7 +54,7 @@ class DataGenerator(object):
         sample_df = pd.DataFrame(sample)
         return sample_df
 
-    def make_vertual_data(self):
+    def make_virtual_data(self):
         cust_df = self.generate_sample(self.cust_dist, self.data_size)
         cust_df['마감년월'] = cust_df['마감년월'].astype(int)
         cust_df['ID'] = list(range(1, self.data_size + 1))
@@ -71,14 +71,16 @@ class DataGenerator(object):
                                                          size=sum(mask))
         contract_df['prdt_cat'] = contract_df['상품중분류2'].replace(read_product_label()['contract_previous_label'])
 
-        target_df = self.generate_sample(self.target_dist, self.data_size * 3)
-        target_df['ID'] = list(range(1, self.data_size + 1)) * 3
+        target_df = self.generate_sample(self.target_dist, self.data_size * 5)
+        target_df['ID'] = list(range(1, self.data_size + 1)) * 5
         target_df['계약일자'] = pd.to_datetime(target_df['계약일자'] // 10 ** 9, unit='s')
         mask = target_df['계약일자'] < reference_date
-        target_df.loc[mask, '계약일자'] = np.random.choice(pd.date_range(start=reference_date, periods=sum(mask)),
+        target_df.loc[mask, '계약일자'] = np.random.choice(pd.date_range(start=reference_date, end=reference_date + pd.DateOffset(months=6)),
                                                        size=sum(mask))
         target_df['prdt_cat'] = target_df['상품중분류2'].replace(read_product_label()['contract_target_label'])
         target_df = target_df.drop_duplicates(subset=['prdt_cat', 'ID'])
+        target_labels = set(read_product_label()['contract_target_label'].values())
+        assert target_labels == set(target_df.prdt_cat), "missing value in 'prdt_cat'"
 
         assert set(cust_df.ID) == set(contract_df.ID) == set(target_df.ID)
         return cust_df, contract_df, target_df
@@ -97,5 +99,5 @@ if __name__ == '__main__':
 
     # 2. DataGenerator
     dg = DataGenerator('dev_customer_dist', 'dev_contract_dist', 'dev_target_dist')
-    cust_df, contract_df, target_df = dg.make_vertual_data()
+    cust_df, contract_df, target_df = dg.make_virtual_data()
     print(cust_df.head())

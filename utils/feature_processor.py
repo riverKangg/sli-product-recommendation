@@ -194,7 +194,7 @@ class FeatureProcessor(object):
 
 if __name__ == '__main__':
     dg = DataGenerator('dev_customer_dist', 'dev_contract_dist', 'dev_target_dist')
-    cust_df, contract_df, target_df = dg.make_vertual_data()
+    cust_df, contract_df, target_df = dg.make_virtual_data()
 
     data_dict = {'dev': {}, 'oot': {}}
     data_dict['dev']['dev_customer'] = cust_df
