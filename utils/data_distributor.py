@@ -57,18 +57,30 @@ class DataGenerator(object):
     def make_vertual_data(self):
         cust_df = self.generate_sample(self.cust_dist, self.data_size)
         cust_df['마감년월'] = cust_df['마감년월'].astype(int)
-        cust_df['ID'] = range(1, self.data_size + 1)
+        cust_df['ID'] = list(range(1, self.data_size + 1))
+        assert len(set(cust_df['마감년월'])) == 1
+        assert cust_df['ID'].is_unique
+
+        reference_date = pd.to_datetime(cust_df['마감년월'][0], format='%Y%m')
 
         contract_df = self.generate_sample(self.contract_dist, self.data_size * 10)
         contract_df['ID'] = list(range(1, self.data_size + 1)) * 10
         contract_df['계약일자'] = pd.to_datetime(contract_df['계약일자'] // 10 ** 9, unit='s')
+        mask = contract_df['계약일자'] > reference_date
+        contract_df.loc[mask, '계약일자'] = np.random.choice(pd.date_range(end=reference_date, periods=sum(mask)),
+                                                         size=sum(mask))
         contract_df['prdt_cat'] = contract_df['상품중분류2'].replace(read_product_label()['contract_previous_label'])
 
         target_df = self.generate_sample(self.target_dist, self.data_size * 3)
         target_df['ID'] = list(range(1, self.data_size + 1)) * 3
         target_df['계약일자'] = pd.to_datetime(target_df['계약일자'] // 10 ** 9, unit='s')
+        mask = target_df['계약일자'] < reference_date
+        target_df.loc[mask, '계약일자'] = np.random.choice(pd.date_range(start=reference_date, periods=sum(mask)),
+                                                       size=sum(mask))
         target_df['prdt_cat'] = target_df['상품중분류2'].replace(read_product_label()['contract_target_label'])
+        target_df = target_df.drop_duplicates(subset=['prdt_cat', 'ID'])
 
+        assert set(cust_df.ID) == set(contract_df.ID) == set(target_df.ID)
         return cust_df, contract_df, target_df
 
 

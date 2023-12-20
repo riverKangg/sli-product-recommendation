@@ -1,6 +1,4 @@
-import warnings
-
-warnings.filterwarnings('ignore')
+import pickle
 from datetime import datetime
 
 from utils import *
@@ -57,8 +55,6 @@ tp = TargetProcessor(data_dict['dev']['dev_customer'], data_dict['dev']['dev_con
 y = tp.make_target_data()
 
 data_config['target'] = tp.return_target_describe
-
-import pickle
 
 # save config
 print('■■■ Save config ■■■')

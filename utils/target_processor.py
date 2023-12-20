@@ -111,11 +111,14 @@ class TargetProcessor(object):
 
 
 if __name__ == '__main__':
-    customer_distributor = DataDistributor('dev_customer_dist')
-    customer_df = customer_distributor.generate_samples()
+    dg = DataGenerator('dev_customer_dist', 'dev_contract_dist', 'dev_target_dist')
+    cust_df, contract_df, target_df = dg.make_vertual_data()
 
+    data_dict = {'dev': {}, 'oot': {}}
+    data_dict['dev']['dev_customer'] = cust_df
+    data_dict['dev']['dev_contract_previous'] = contract_df
+    data_dict['dev']['dev_contract_target'] = target_df
 
-    data_builder()
     tp = TargetProcessor(data_dict['dev']['dev_customer'], data_dict['dev']['dev_contract_previous'],
                          data_dict['dev']['dev_contract_target'])
     target_data = tp.make_target_data()
