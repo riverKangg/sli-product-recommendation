@@ -40,9 +40,8 @@ class modelResult(object):
 
     def read_oot_testset(self):
         oot_data_name = self.model_config.get_raw_dataset_name.replace('202305', '202308')
-        oot_data_path = f'input/{oot_data_name}.csv'
-        oot_data = pd.read_csv(oot_data_path)
-        # oot_input_data, _ = self.make_model_input(oot_data)
+        with open(f'input/{oot_data_name}.pkl', 'rb') as f:
+            oot_data = pickle.load(f)
         return oot_data
 
     def make_target_tamplate(self):
@@ -164,6 +163,7 @@ class modelResult(object):
             old = pd.read_csv(old_data_path, encoding='euc-kr').set_index('ID')
             assert len(old) == len(set(old.index))
             old.columns = ['old_item']
+            old.index = old.index.astype(str)
 
             accuracy_df = accuracy_df.join(old)
             assert accuracy_df.isna().sum().sum() == 0
@@ -279,11 +279,12 @@ class modelResult(object):
         testset = self.read_oot_testset() if out_of_time else self.read_testset()
         testset = testset[self.model_config.get_clf_features]
         lgb_ids = list(set(df_accuracy_clf.index))
-        df_for_clf = testset[testset.ID.isin(lgb_ids) & ~testset.target_category.isin([1, 2])]
+        df_for_clf = testset[testset.ID.isin(lgb_ids)]  # & ~testset.target_category.isin([1,2])
 
         assert df_for_clf.duplicated().sum() == 0
 
         X, y = make_base_input(df_for_clf) if 'base' in clf_model_path else make_chain_input(df_for_clf)
+        y = y.drop(columns=['1', '2'], errors='ignore')
         assert y.shape[1] == len(self.model_config.get_clf_multioutput_columns)
         y_proba = clf_model.predict_proba(X)
         y_pred_class = get_clf_pred(y, y_proba, output='category')
