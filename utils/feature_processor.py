@@ -24,7 +24,7 @@ class FeatureProcessor(object):
         print(f' is_development: {self.is_development}')
 
         assert self.customer_dataset.ID.is_unique
-        self.ids = self.customer_dataset[[]]
+        self.ids = self.customer_dataset[['ID']].set_index('ID')
         self.num_of_ids = self.customer_dataset.shape[0]
 
         self.contract_previous_dataset = contract_previous_dataset
@@ -78,9 +78,7 @@ class FeatureProcessor(object):
         result_df = data.groupby('ID').agg(pre_contract_count=('계약여부', 'count'),
                                            pre_contract_month_min=('계약경과월', 'min'),
                                            pre_contract_month_max=('계약경과월', 'max'))
-
         data_previous_contract_describe = data_previous_contract_describe.join(result_df)
-        return data_previous_contract_describe
 
         assert len(data_previous_contract_describe[data_previous_contract_describe.pre_contract_count == 0]) == 0
         assert ~data_previous_contract_describe.isnull().values.any()
@@ -197,7 +195,6 @@ class FeatureProcessor(object):
 if __name__ == '__main__':
     dg = DataGenerator('dev_customer_dist', 'dev_contract_dist', 'dev_target_dist')
     cust_df, contract_df, target_df = dg.make_vertual_data()
-    print(cust_df.head())
 
     data_dict = {'dev': {}, 'oot': {}}
     data_dict['dev']['dev_customer'] = cust_df
