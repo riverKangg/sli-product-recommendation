@@ -14,8 +14,8 @@ class FeatureProcessor(object):
                  contract_target_dataset,
                  development_reference_date='202305',
                  ):
-        print(f'■■■ Feature Processing ■■■')
-        self.customer_dataset = customer_dataset
+        print(f'\n■■■ Feature Processing ■■■')
+        self.customer_dataset = customer_dataset if customer_dataset.index.name == 'ID' else customer_dataset.set_index('ID')
 
         assert len(set(customer_dataset.마감년월)) == 1
         self.yyyymm = list(set(customer_dataset.마감년월))[0]
@@ -23,8 +23,8 @@ class FeatureProcessor(object):
         self.is_development = True if str(self.yyyymm) == development_reference_date else False
         print(f' is_development: {self.is_development}')
 
-        assert self.customer_dataset.ID.is_unique
-        self.ids = self.customer_dataset[['ID']].set_index('ID')
+        assert self.customer_dataset.index.is_unique
+        self.ids = self.customer_dataset[[]]
         self.num_of_ids = self.customer_dataset.shape[0]
 
         self.contract_previous_dataset = contract_previous_dataset

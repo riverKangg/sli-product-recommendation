@@ -12,9 +12,14 @@ class DataDistributor(object):
         self.filepath = f'utils/distribution/{filename}.json'
         self.distributions = {}
 
-    def save_distributions(self, df):
+    def save_distributions(self, df_raw):
+        df = df_raw[:]
+        if '계약일자' in df.columns:
+            df['계약일자'] = df['계약일자'].astype(int) / 10 ** 9
+
         for column in df.columns:
             column_data = df[column]
+
             if pd.api.types.is_numeric_dtype(column_data):
                 self.distributions[column] = {'mean': column_data.mean(),
                                               'std': column_data.std()}
@@ -75,8 +80,9 @@ class DataGenerator(object):
         target_df['ID'] = list(range(1, self.data_size + 1)) * 5
         target_df['계약일자'] = pd.to_datetime(target_df['계약일자'] // 10 ** 9, unit='s')
         mask = target_df['계약일자'] < reference_date
-        target_df.loc[mask, '계약일자'] = np.random.choice(pd.date_range(start=reference_date, end=reference_date + pd.DateOffset(months=6)),
-                                                       size=sum(mask))
+        target_df.loc[mask, '계약일자'] = np.random.choice(
+            pd.date_range(start=reference_date, end=reference_date + pd.DateOffset(months=6)),
+            size=sum(mask))
         target_df['prdt_cat'] = target_df['상품중분류2'].replace(read_product_label()['contract_target_label'])
         target_df = target_df.drop_duplicates(subset=['prdt_cat', 'ID'])
         target_labels = set(read_product_label()['contract_target_label'].values())

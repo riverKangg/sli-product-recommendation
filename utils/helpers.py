@@ -3,8 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, make_scorer, f1_score
 
-def print_():
-    print('aaa')
+
 def read_product_label():
     # read_config.py
     with open('utils/target_label_dictionary.json', 'rb') as f:
@@ -13,10 +12,11 @@ def read_product_label():
 
 
 # ■■■■■■■■■ CLF : make input ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-def make_base_input(df_for_clf):
+def make_base_input(df_for_clf, drop_category_list):
+    num_drop_categories = len(drop_category_list)
     assert df_for_clf.duplicated().sum() == 0
     X_base = df_for_clf.drop(columns=['ID', 'target', 'target_category'])
-    y_base = df_for_clf.target_category - 3
+    y_base = df_for_clf.target_category - (num_drop_categories + 1)
     assert min(y_base) == 0
     assert max(y_base) == len(set(y_base)) - 1
     return X_base, y_base
