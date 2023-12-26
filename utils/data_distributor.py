@@ -14,17 +14,22 @@ class DataDistributor(object):
 
     def save_distributions(self, df_raw):
         df = df_raw[:]
+        df = df.drop(columns=['ID'], errors='ignore')
         if '계약일자' in df.columns:
             df['계약일자'] = df['계약일자'].astype(int) / 10 ** 9
 
         for column in df.columns:
             column_data = df[column]
 
-            if pd.api.types.is_numeric_dtype(column_data):
+            if pd.api.types.is_object_dtype(column_data) or len(set(column_data)) < 20:
+                self.distributions[column] = column_data.value_counts(normalize=True).to_dict()
+
+
+            elif pd.api.types.is_numeric_dtype(column_data):
                 self.distributions[column] = {'mean': column_data.mean(),
                                               'std': column_data.std()}
             else:
-                self.distributions[column] = column_data.value_counts(normalize=True).to_dict()
+                print(f'{column}: Check data for distribution')
 
         with open(self.filepath, 'w') as file:
             json.dump(self.distributions, file)

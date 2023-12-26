@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
@@ -15,7 +16,8 @@ class FeatureProcessor(object):
                  development_reference_date='202305',
                  ):
         print(f'\n■■■ Feature Processing ■■■')
-        self.customer_dataset = customer_dataset if customer_dataset.index.name == 'ID' else customer_dataset.set_index('ID')
+        self.customer_dataset = customer_dataset if customer_dataset.index.name == 'ID' else customer_dataset.set_index(
+            'ID')
 
         assert len(set(customer_dataset.마감년월)) == 1
         self.yyyymm = list(set(customer_dataset.마감년월))[0]
@@ -144,7 +146,8 @@ class FeatureProcessor(object):
             os.makedirs('utils/encoders/', exist_ok=True)
             for feat in categorical_features:
                 lbe = LabelEncoder()
-                lbe.fit(data[feat])
+                lbe_data = list(data[feat]) + ['unknown']
+                lbe.fit(lbe_data)
                 joblib.dump(lbe, f'utils/encoders/{feat}_label_encoder.joblib')
                 del lbe
 
@@ -154,10 +157,10 @@ class FeatureProcessor(object):
                 joblib.dump(mms, f'utils/encoders/{feat}_minmax_scaler.joblib')
                 del mms
 
-
         for feat in categorical_features:
             filename = f'utils/encoders/{feat}_label_encoder.joblib'
             lbe = joblib.load(filename)
+            data[feat] = data[feat].astype('str')
             data[feat] = lbe.transform(data[feat].map(lambda s: s if s in lbe.classes_ else 'unknown'))
             del lbe
 
@@ -167,7 +170,6 @@ class FeatureProcessor(object):
             del mms
 
         self.customer_dataset = data
-
 
     def make_input_for_modeling(self):
         if self.is_development:
