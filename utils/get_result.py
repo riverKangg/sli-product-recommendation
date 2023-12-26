@@ -20,7 +20,7 @@ class modelResult(object):
         self.model = torch.load(f"./models/{model_name}.pt")
 
         self.model_config = readModelConfig(model_name)
-        self.data_config = readDataConfig(input_name=self.model_config.get_raw_dataset_name)
+        self.data_config = readDataConfig(model_name)
 
         self.model_config.info
         self.data_config.info

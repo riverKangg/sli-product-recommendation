@@ -3,11 +3,14 @@ import torch
 import pandas as pd
 import numpy as np
 
+import utils
 from utils import *
 
 
 class readDataConfig(object):
-    def __init__(self, model_name="model", input_name="data"):
+    def __init__(self, model_name="model"):
+        model_config = utils.readModelConfig(model_name)
+        input_name = model_config.get_raw_dataset_name
         with open(f"input/{input_name}_config.json", "rb") as f:
             self.data_config = json.load(f)
 
