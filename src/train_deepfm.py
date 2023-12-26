@@ -4,7 +4,7 @@ raw_dataset_name = 'data_del_variable_202305'
 model_name = "model_del_variable_mini"
 
 drop_features = [
-    '직업대분류', '직업군_관계사공통기준','pre_contract_count', 'pre_contract_month_min', 'pre_contract_month_max',
+    '직업대분류', '직업군_관계사공통기준', 'pre_contract_count', 'pre_contract_month_min', 'pre_contract_month_max',
     '최근계약경과월'
 ]
 
@@ -61,7 +61,7 @@ fixlen_feature_columns += [DenseFeat(feat, 1) for feat in numerical_features]
 
 # 4-2. categorical features
 fixlen_feature_columns += [
-    SparseFeat(feat, vocabulary_size=max(input_data[feat])+1, # len(set(input_data[feat])),
+    SparseFeat(feat, vocabulary_size=max(input_data[feat]) + 1,  # len(set(input_data[feat])),
                embedding_dim=8, group_name=feature_cat) for
     feature_cat, feature_list in featuremap['categorical'].items()
     for feat in feature_list if feat not in drop_features]
@@ -145,8 +145,7 @@ dataset_path = f'input/{model_name}_dataset.pkl'
 with open(dataset_path, 'wb') as f:
     pickle.dump(input_dataset, f)
 
-# 8-3. Save config
-
+# 8-3. Save Model Config
 model_config_contants = {}
 model_config_contants['model_name'] = model_name
 model_config_contants['model_path'] = model_path
