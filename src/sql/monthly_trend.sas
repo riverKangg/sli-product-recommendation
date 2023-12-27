@@ -8,9 +8,11 @@ proc sql ;
      , a.ZA_CONTR_CUST_ID as "계약자고객ID"
         , &product
      , &product2
+
               from   "_SYS_BIC"."LM.PM.M/ZCVPMM600"  as a           /* 마감계약 :PMM_계약스냅샷*/
     left join "_SYS_BIC"."LM.BP.B/ZCVMDB086" as b
       on a.ZA_CONTR_CUST_ID=b.ZA_BP_NO /*MD-고객_기본*/
+
               /* 기본속성 조건*/
              where  a.ZA_CONT_YMD >= 20220901
                 and    a.ZA_G_CONT_SC_CD <> '21'  /* 단체계약제외: 21=단체기업주계약*/
@@ -20,6 +22,7 @@ proc sql ;
  );
 disconnect from saphana;
 quit;
+
 
 /*■■■■■■■■ 월별 계약 현황  - 전체 ■■■■■■■■■■■■■■■■■■■■■■■*/
 PROC SQL;
@@ -58,6 +61,8 @@ CREATE TABLE 월별계약현황_비중 AS
 ; QUIT;
 PROC DELETE DATA=월별계약현황DATA 월별계약현황; QUIT;
 
+
+
 /*■■■■■■■■ 월별 계약 현황  - 대상자 ■■■■■■■■■■■■■■■■■■■■■*/
 PROC SQL;
 CREATE TABLE 월별계약현황DATA_대상자 AS
@@ -68,11 +73,13 @@ CREATE TABLE 월별계약현황DATA_대상자 AS
  GROUP BY 1,2
  ORDER BY 2,1
 ; QUIT;
+
 PROC TRANSPOSE DATA=월별계약현황DATA_대상자 OUT=월별계약현황_대상자(DROP=_NAME_);
  BY  상품중분류2;
  ID 계약일자 ;
  VAR 고객수;
 ;RUN;
+
 PROC SQL;
 CREATE TABLE 월별계약현황_대상자_비중 AS
  SELECT 상품중분류2
@@ -94,10 +101,17 @@ CREATE TABLE 월별계약현황_대상자_비중 AS
  FROM 월별계약현황_대상자
  ORDER BY '202305'N DESC
 ; QUIT;
+
 PROC DELETE DATA=월별계약현황DATA_대상자 월별계약현황_대상자; QUIT;
+
 /*■■■■■■■■ 최종 결과 확인 ■■■■■■■■■■■■■■■■■■■■■*/
+
 PROC PRINT DATA=월별계약현황_비중; RUN;
 PROC PRINT DATA=월별계약현황_대상자_비중; RUN;
+
+
+
+
 
 
 
@@ -112,9 +126,11 @@ proc sql ;
      , a."ZA_PRDT_NM"  AS "상품명"
         , &product
      , &product2
+
               from   "_SYS_BIC"."LM.PM.M/ZCVPMM600"  as a           /* 마감계약 :PMM_계약스냅샷*/
     left join "_SYS_BIC"."LM.BP.B/ZCVMDB086" as b
       on a.ZA_CONTR_CUST_ID=b.ZA_BP_NO /*MD-고객_기본*/
+
               /* 기본속성 조건*/
              where  SUBSTR(a.ZA_CONT_YMD,1,6) = '202311'
                 and    a.ZA_G_CONT_SC_CD <> '21'  /* 단체계약제외: 21=단체기업주계약*/
@@ -129,5 +145,3 @@ proc sql ;
  );
 disconnect from saphana;
 quit;
-
-<Mail 첨부 파일>
