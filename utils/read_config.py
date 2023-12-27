@@ -8,9 +8,15 @@ from utils import *
 
 
 class readDataConfig(object):
-    def __init__(self, model_name="model"):
-        model_config = utils.readModelConfig(model_name)
-        input_name = model_config.get_raw_dataset_name
+    def __init__(self, model_name=None, data_name=None):
+        if model_name is not None:
+            model_config = utils.readModelConfig(model_name)
+            input_name = model_config.get_raw_dataset_name
+        elif data_name is not None:
+            input_name = data_name
+        else:
+            raise ValueError("Either provide a valid model_name with existing configuration or a valid data_name.")
+
         with open(f"input/{input_name}_config.json", "rb") as f:
             self.data_config = json.load(f)
 
